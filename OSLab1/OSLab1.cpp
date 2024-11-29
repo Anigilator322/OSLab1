@@ -72,10 +72,8 @@ int main() {
     Monitor monitor;
     setlocale(LC_ALL, "russian");
     thread supplierThread(supplier, ref(monitor));
-    thread supplierThread2(supplier, ref(monitor));
     thread consumerThread(consumer, ref(monitor));
 
-    supplierThread2.join();
     supplierThread.join();
     consumerThread.join();
 
