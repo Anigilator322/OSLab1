@@ -63,10 +63,16 @@ int main() {
 	int incoming_socket_fd = 0;
 	int max_socket;
 
-	while (1) {
+	while (1) 
+	{
 		FD_ZERO(&fds);
 		FD_SET(sockfd, &fds);
-	
+
+		if (sighupReceived) {
+			printf("SIGHUP received!");
+			break;
+		}
+		
 		if (incoming_socket_fd > 0) {
 			FD_SET(incoming_socket_fd, &fds);
 		}
@@ -76,12 +82,6 @@ int main() {
 		if (pselect(max_socket + 1, &fds, NULL, NULL, NULL, &origMask) < 0 && errno != EINTR) {
 			perror("Pselect error");
 			exit(EXIT_FAILURE);
-		}
-
-		if (sighupReceived) {
-			printf("SIGHUP received!");
-			sighupReceived = 0;
-			continue;
 		}
 
 		if (incoming_socket_fd > 0 && FD_ISSET(incoming_socket_fd, &fds)) {
@@ -109,6 +109,8 @@ int main() {
 
 			printf("New connection \n");
 		}
+
+		
 	}
 
 	close(sockfd);
